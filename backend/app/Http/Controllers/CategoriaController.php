@@ -21,7 +21,17 @@ class CategoriaController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        //validacion
+        $request->validate([
+            'nombre'=>'required',
+            'descripcion'=>'nullable'
+        ]);
+
+        $categoria = Categoria::create($request->all());
+        return response()->json([
+            'mensaje'=>'Categoria creada exitosamente',
+            'categoria'=> $categoria
+        ], 201);
     }
 
     /**
@@ -30,6 +40,14 @@ class CategoriaController extends Controller
     public function show(string $id)
     {
         //
+        $categoria = Categoria::find($id);
+        if(!$categoria){
+            return response()->json([
+                'mensaje'=>'Categoria no encontrada'
+            ], 404
+            );
+        }
+        return response()->json($categoria, 200);
     }
 
     /**
@@ -38,6 +56,26 @@ class CategoriaController extends Controller
     public function update(Request $request, string $id)
     {
         //
+        $request->validate([
+            'nombre'=>'required',
+            'descripcion'=>'nullable'
+        ]);
+
+        $categoria = Categoria::find($id);
+        if(!$categoria){
+            return response()->json([
+                'mensaje'=>'Categoria no encontrada'
+            ], 404
+            );
+        }
+        
+        $categoria->update($request->all());
+
+        return response()->json([
+            'mensaje'=>'Categoria actualizada exitosamente',
+            'categoria'=> $categoria
+        ], 201);
+
     }
 
     /**
@@ -45,6 +83,19 @@ class CategoriaController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+       //
+       $categoria = Categoria::find($id);
+       if(!$categoria){
+        return response()->json([
+            'mensaje'=>'Categoria no encontrada'
+        ], 404
+        );
+    }
+
+    $categoria->delete();
+    return response()->json([
+        'mensaje'=>'Categoria eliminada exitosamente'
+    ], 200);
+
     }
 }
